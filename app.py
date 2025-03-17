@@ -22,8 +22,27 @@ def index():
     ]
     # my_array = ["Android", "Web_Development", "AI", "UI/UX"]
     return jsonify(my_array),200
-
+@app.route("/check")
+def bla():
+# Configure Chrome options
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Run in headless mode (no UI)
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
     
+    # Initialize WebDriver
+    driver = webdriver.Chrome(options=chrome_options)
+    
+    # Open a webpage
+    driver.get("https://www.google.com")
+    
+    # Print the page title
+    a = driver.title
+    
+    # Close the browser
+    driver.quit()
+    return jsonify(a),200
+
 @app.route("/internshala/<user_feild>")
 def internshala(user_feild):
     chrome_options = Options()
