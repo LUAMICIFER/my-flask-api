@@ -20,7 +20,7 @@ def index():
         {"link": "https://cdn-icons-png.flaticon.com/128/12602/12602187.png", "name": "UI/UX"}
     ]
     # my_array = ["Android", "Web_Development", "AI", "UI/UX"]
-    return jsonify(my_array)
+    return jsonify(my_array),200
 
     
 # @app.route("/internshala/<user_feild>")
