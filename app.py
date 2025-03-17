@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import requests
 from bs4 import BeautifulSoup
+from selenium.webdriver.chrome.options import Options
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
