@@ -15,10 +15,10 @@ app = Flask(__name__)
 @app.route("/index")
 def index():
     my_array = [
-        {"link": "https://cdn-icons-png.flaticon.com/128/518/518705.png", "name": "Android"},
-        {"link": "https://cdn-icons-png.flaticon.com/128/3178/3178285.png", "name": "Web Development"},
-        {"link": "https://cdn-icons-png.flaticon.com/128/5278/5278402.png", "name": "AI"},
-        {"link": "https://cdn-icons-png.flaticon.com/128/12602/12602187.png", "name": "UI/UX"}
+        {"link": "https://cdn-icons-png.flaticon.com/128/518/518705.png", "name": "Android","path": "android-app-development-jobs/"},
+        {"link": "https://cdn-icons-png.flaticon.com/128/3178/3178285.png", "name": "Web Development","path":"web-development-jobs/"},
+        {"link": "https://cdn-icons-png.flaticon.com/128/5278/5278402.png", "name": "AI","path": "artificial-intelligence-ai-jobs/"},
+        {"link": "https://cdn-icons-png.flaticon.com/128/12602/12602187.png", "name": "UI/UX","path":"ui-ux-jobs/"}
     ]
     # my_array = ["Android", "Web_Development", "AI", "UI/UX"]
     return jsonify(my_array),200
