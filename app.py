@@ -53,7 +53,7 @@ def index():
     return jsonify(job_categories), 200
 
 
-@app.route("/check")
+@app.route("/")
 def check():
     """Checks if Selenium WebDriver is working by fetching Google's homepage title."""
     chrome_options = Options()
@@ -127,6 +127,66 @@ def internshala(user_field):
     save_cache(user_field, jobs)  
 
     return jsonify(jobs), 200
+
+@app.route("/intern/<user_field>")
+def intern(user_field):
+    """Fetches job listings for a specific field from Internshala."""
+    
+    cached_intern = load_cache(user_field) 
+    if cached_intern:
+        return jsonify(cached_intern), 200 
+    
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.get(f"https://internshala.com/internships/{user_field}")
+    driver.maximize_window()
+    time.sleep(2)
+
+    try:
+        driver.find_element(By.ID, 'close_popup').click()
+    except:
+        pass 
+
+    time.sleep(2)
+
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    while True:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            break
+        last_height = new_height
+
+    html = driver.page_source
+    soup = BeautifulSoup(html, "html.parser")
+
+    job_titles = [element.text.strip() for element in soup.find_all("a", class_="job-title-href")]
+    job_links = ["https://internshala.com" + a["href"] for a in soup.find_all("a", class_="job-title-href", href=True)]
+    image_links = [img["src"] if img and "src" in img.attrs else None for div in soup.find_all("div", class_="internship_logo") if (img := div.find("img"))]
+    company_names = [element.text.strip() for element in driver.find_elements(By.CLASS_NAME, "company-name")]
+    locations = [element.text.strip() for element in driver.find_elements(By.CSS_SELECTOR, ".row-1-item.locations")]
+
+    jobs = []
+    for i in range(len(job_titles)):  
+        jobs.append({
+            "title": job_titles[i] if i < len(job_titles) else None,
+            "link": job_links[i] if i < len(job_links) else None,
+            "image_link": image_links[i] if i < len(image_links) else None,
+            "location": locations[i] if i < len(locations) else None,
+            "company_name": company_names[i] if i < len(company_names) else None
+        })
+
+    driver.quit()
+
+    save_cache(user_field, jobs)  
+
+    return jsonify(jobs), 200
+
 
 
 if __name__ == "__main__":
